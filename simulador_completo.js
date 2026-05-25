@@ -170,13 +170,13 @@ function calcularCredito() {
     if (cuotaCalculada <= capacidadPago) {
         estadoCredito = "APROBADO";
         creditoAprobado = true;
-        document.getElementById("btnSolicitarCredito").disabled = false;
+        document.getElementById("btnAsignarCredito").disabled = false;
         // Aplicar estilos según el resultado
         divResultado.className = "aprobado"; 
     } else {
         estadoCredito = "RECHAZADO";
         creditoAprobado = false;
-        document.getElementById("btnSolicitarCredito").disabled = true;
+        document.getElementById("btnAsignarCredito").disabled = true;
         // Aplicar estilos según el resultado
         divResultado.className = "rechazado";
     }
@@ -187,4 +187,81 @@ function calcularCredito() {
         "Total a pagar: " + totalAPagar.toFixed(2) + "<br>" +
         "Cuota mensual: " + cuotaCalculada.toFixed(2) + "<br>" +
         "RESULTADO: " + estadoCredito;
+}
+
+// HISTORIAL Y ASIGNACIÓN DE CRÉDITOS
+// Agregar botón "Asignar Crédito"
+function asignarCredito() {
+    if (creditoAprobado && clienteSeleccionado != null) {
+        // Creación del objeto con la estructura solicitada
+        let credito = {
+            cedula: clienteSeleccionado.cedula,
+            nombre: clienteSeleccionado.nombre,
+            apellido: clienteSeleccionado.apellido,
+            monto: montoCalculado,
+            tasa: tasaInteres,
+            plazo: plazoCalculado, 
+            cuota: cuotaCalculada.toFixed(2)
+        };
+
+        creditos.push(credito); // Agregamos el objeto al arreglo global
+        alert("Crédito asignado con éxito.");
+
+        // Limpiar formulario y deshabilitar botón nuevamente
+        document.getElementById("btnAsignarCredito").disabled = true;
+        document.getElementById("resultadoCredito").innerHTML = "";
+        document.getElementById("resultadoCredito").className = "";
+        mostrarTextoEnCaja("montoCredito", "");
+        mostrarTextoEnCaja("plazoCredito", "");
+    }
+}
+
+// Crear función buscarCreditos
+function buscarCreditos(cedula) {
+    let creditosEncontrados = [];
+    // Recorremos el arreglo global de créditos
+    for (let i = 0; i < creditos.length; i++) {
+        if (creditos[i].cedula === cedula) {
+            creditosEncontrados.push(creditos[i]);
+        }
+    }
+    return creditosEncontrados; // Retorna un arreglo con los créditos de ese cliente
+}
+
+// Crear función pintarCreditos
+function pintarCreditos(arregloCreditos) {
+    let tbody = document.getElementById("tablaCreditos");
+    let filas = "";
+
+    // Recorremos el arreglo recibido por parámetro y pintamos las columnas
+    for (let i = 0; i < arregloCreditos.length; i++) {
+        let c = arregloCreditos[i];
+        filas += "<tr>";
+        filas += "<td>" + c.cedula + "</td>";
+        filas += "<td>" + c.nombre + "</td>";
+        filas += "<td>" + c.apellido + "</td>";
+        filas += "<td>" + c.monto + "</td>";
+        filas += "<td>" + c.tasa + "%</td>";
+        filas += "<td>" + c.plazo + "</td>";
+        filas += "<td>" + c.cuota + "</td>";
+        filas += "</tr>";
+    }
+
+    tbody.innerHTML = filas;
+}
+
+// Crear función buscarCreditosCliente
+function buscarCreditosCliente() {
+    // Tomar el valor de la cédula desde la caja de texto
+    let cedula = recuperaraTexto("buscarCedulaListado");
+
+    if (cedula === "") {
+        // Si la caja está vacía, mostrar TODOS los créditos registrados
+        pintarCreditos(creditos);
+    } else {
+        // Invocar la función buscarCreditos
+        let resultado = buscarCreditos(cedula);
+        // Enviar el resultado obtenido a la función pintarCreditos
+        pintarCreditos(resultado);
+    }
 }
