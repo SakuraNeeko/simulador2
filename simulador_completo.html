@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Sistema de Créditos</title>
+  <link rel="stylesheet" href="simulador_completo.css">
+</head>
+<body>
+
+<header>
+  <h1>Sistema Básico de Créditos</h1>
+</header>
+
+<nav>
+  <button onclick="mostrarSeccion('parametros')">Parámetros</button>
+  <button onclick="mostrarSeccion('clientes')">Clientes</button>
+  <button onclick="mostrarSeccion('credito')">Solicitar Crédito</button>
+  <button onclick="mostrarSeccion('listaCreditos')">Historial de Créditos</button>
+</nav>
+
+<section id="parametros" class="activa">
+  <h2>Configurar Parámetros</h2>
+
+  <label>Tasa de interés:</label>
+  <input type="number" id="tasaInteres" min="10" max="20" value="15">
+  <span>%</span>
+
+  <br>
+  <button onclick="guardarTasa()">Guardar tasa</button>
+
+  <p id="mensajeTasa"></p>
+</section>
+
+<section id="clientes">
+  <h2>Registro de Clientes</h2>
+
+  <input type="text" id="txtCedula" placeholder="Cédula">
+  <input type="text" id="txtNombre" placeholder="Nombre">
+  <input type="text" id="txtApellido" placeholder="Apellido">
+  <input type="number" id="txtIngresos" placeholder="Ingresos">
+  <input type="number" id="txtEgresos" placeholder="Egresos">
+
+  <br>
+
+  <button onclick="guardarCliente()">Guardar cliente</button>
+  <button onclick="limpiar()">Limpiar</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Cédula</th>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Ingresos</th>
+        <th>Egresos</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tablaClientes">
+       </tbody>
+  </table>
+</section>
+
+<section id="credito">
+  <h2>Solicitar Crédito</h2>
+
+  <input type="text" id="buscarCedulaCredito">
+  <button onclick="buscarClienteCredito()">Buscar cliente</button>
+
+  <div id="datosClienteCredito" class="card"></div>
+
+  <input type="number" id="montoCredito" >
+  <input type="number" id="plazoCredito" >
+
+  <br>
+
+  <button onclick="calcularCredito()">Calcular crédito</button>
+
+  <div id="resultadoCredito"></div>
+
+  <button id="btnSolicitarCredito" onclick="solicitarCredito()" disabled>
+    Solicitar crédito
+  </button>
+</section>
+
+<section id="listaCreditos">
+  <h2>Créditos Registrados</h2>
+
+  <input type="text" id="buscarCedulaListado" >
+  <button onclick="buscarCreditosCliente()">Buscar</button>
+  <button onclick="pintarCreditos(creditos)">Ver todos</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Cédula</th>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Monto</th>
+        <th>Tasa</th>
+        <th>Plazo</th>
+        <th>Cuota</th>
+      </tr>
+    </thead>
+    <tbody id="tablaCreditos">
+       </tbody>
+  </table>
+</section>
+
+<script src="utilitarios.js"></script>
+<script src="simulador_completo.js"></script>
+</body>
+</html>
