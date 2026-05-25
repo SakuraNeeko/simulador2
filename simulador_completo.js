@@ -121,3 +121,70 @@ function limpiar() {
     mostrarTextoEnCaja("txtEgresos", "");
     clienteSeleccionado = null;
 }
+
+// SOLICITAR CRÉDITO
+function buscarClienteCredito() {
+    // Tomar el valor ingresado en el campo de cédula
+    let cedula = recuperaraTexto("buscarCedulaCredito");
+    
+    // Buscar al cliente
+    clienteSeleccionado = buscarCliente(cedula);
+
+    let divDatos = document.getElementById("datosClienteCredito");
+
+    // Mostrar datos si existe
+    if (clienteSeleccionado != null) {
+        divDatos.innerHTML = 
+            "<h3>Datos del Cliente</h3>" +
+            "<p><strong>Cédula:</strong> " + clienteSeleccionado.cedula + "</p>" +
+            "<p><strong>Nombre:</strong> " + clienteSeleccionado.nombre + "</p>" +
+            "<p><strong>Apellido:</strong> " + clienteSeleccionado.apellido + "</p>" +
+            "<p><strong>Ingresos:</strong> " + clienteSeleccionado.ingresos + "</p>" +
+            "<p><strong>Egresos:</strong> " + clienteSeleccionado.egresos + "</p>";
+    } else {
+        divDatos.innerHTML = "Cliente no encontrado.";
+    }
+}
+
+function calcularCredito() {
+    if (clienteSeleccionado == null) {
+        alert("Primero debe buscar y seleccionar un cliente.");
+        return;
+    }
+
+    // Recuperar valores del formulario
+    montoCalculado = recuperarFloat("montoCredito");
+    plazoCalculado = recuperarInt("plazoCredito");
+
+    let capacidadPago = clienteSeleccionado.ingresos - clienteSeleccionado.egresos;
+
+    // Cálculo del Total a Pagar y Cuota Mensual
+    let interesTotal = montoCalculado * (tasaInteres / 100) * (plazoCalculado / 12);
+    let totalAPagar = montoCalculado + interesTotal;
+    cuotaCalculada = totalAPagar / plazoCalculado;
+
+    let divResultado = document.getElementById("resultadoCredito");
+    let estadoCredito = "";
+
+    // Validar si la cuota supera la capacidad de pago
+    if (cuotaCalculada <= capacidadPago) {
+        estadoCredito = "APROBADO";
+        creditoAprobado = true;
+        document.getElementById("btnSolicitarCredito").disabled = false;
+        // Aplicar estilos según el resultado
+        divResultado.className = "aprobado"; 
+    } else {
+        estadoCredito = "RECHAZADO";
+        creditoAprobado = false;
+        document.getElementById("btnSolicitarCredito").disabled = true;
+        // Aplicar estilos según el resultado
+        divResultado.className = "rechazado";
+    }
+
+    // Mostrar el resultado del crédito
+    divResultado.innerHTML = 
+        "Capacidad de pago: " + capacidadPago.toFixed(2) + "<br>" +
+        "Total a pagar: " + totalAPagar.toFixed(2) + "<br>" +
+        "Cuota mensual: " + cuotaCalculada.toFixed(2) + "<br>" +
+        "RESULTADO: " + estadoCredito;
+}
